@@ -1,0 +1,48 @@
+{
+  "order": [
+    "speaker-1",
+    "speaker-mlr1h6ud-plcwm",
+    "speaker-mlr2daxl-x1wdi",
+    "speaker-mlr3h91z-fzl8y",
+    "speaker-mlr4dq5y-79dzw",
+    "speaker-mlrd7v9i-8ovfs"
+  ],
+  "members": {
+    "speaker-1": {
+      "name": "..",
+      "role": "Talk Title",
+      "desc": "",
+      "insta": "https://www.youtube.com/"
+    },
+    "speaker-mlr1h6ud-plcwm": {
+      "name": ".",
+      "role": "",
+      "desc": "",
+      "insta": ""
+    },
+    "speaker-mlr2daxl-x1wdi": {
+      "name": "...",
+      "role": "",
+      "desc": "",
+      "insta": ""
+    },
+    "speaker-mlr3h91z-fzl8y": {
+      "name": "...",
+      "role": "",
+      "desc": "",
+      "insta": ""
+    },
+    "speaker-mlr4dq5y-79dzw": {
+      "name": ".",
+      "role": "",
+      "desc": "",
+      "insta": ""
+    },
+    "speaker-mlrd7v9i-8ovfs": {
+      "name": ".",
+      "role": "",
+      "desc": "",
+      "insta": ""
+    }
+  }
+}

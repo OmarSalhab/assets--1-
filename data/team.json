@@ -1,0 +1,84 @@
+{
+  "order": [
+    "dr.samer",
+    "abd",
+    "hala-ali",
+    "yousef",
+    "ruaa",
+    "rama",
+    "hesham",
+    "ali",
+    "hala",
+    "leen",
+    "aesma",
+    "sora",
+    "hedaya"
+  ],
+  "members": {
+    "dr.samer": {
+      "name": "Dr. Samer M.Ayasrahhhd",
+      "role": "Licensee & Lead Organizer",
+      "img": "assets/team_dr.samer.png"
+    },
+    "abd": {
+      "name": "Abdulrahman Alnajlat",
+      "role": "Co-Leader Organizer & Deputy Event Lead",
+      "img": "assets/team_abd.jpeg"
+    },
+    "hala-ali": {
+      "name": "Hala Mohammad Ali",
+      "role": "Event Lead Secretary",
+      "img": "assets/team_hala-ali.png"
+    },
+    "yousef": {
+      "name": "yousef yasin",
+      "role": "Web master leader",
+      "img": "assets/team_yousef.png"
+    },
+    "ruaa": {
+      "name": "Ruaa Hussin",
+      "role": "Co Leader-Webmaster ",
+      "img": "assets/team_ruaa.png"
+    },
+    "rama": {
+      "name": "Rama Mustafa",
+      "role": "Program Team Leader",
+      "img": "assets/team_rama.png"
+    },
+    "hesham": {
+      "name": "Hesham Yehyaa",
+      "role": "Program Team Co-Leader",
+      "img": "assets/team_hesham.png"
+    },
+    "ali": {
+      "name": "Ali Shahen",
+      "role": "Sponsorship Team Co-Leader",
+      "img": "assets/team_ali.png"
+    },
+    "hala": {
+      "name": "Hala Alkiswani",
+      "role": "Sponsorship Team Leader",
+      "img": "assets/team_hala.png"
+    },
+    "leen": {
+      "name": "Leen Nofal",
+      "role": "Curation Team Leader",
+      "img": "assets/team_leen.png"
+    },
+    "aesma": {
+      "name": "Aesma Fuaad",
+      "role": "Curation Team Co-Leader",
+      "img": "assets/team_aesma.png"
+    },
+    "sora": {
+      "name": "Sora Alzetawi",
+      "role": "Media Team Leader",
+      "img": "assets/team_sora.png"
+    },
+    "hedaya": {
+      "name": "Hedaya Yasin",
+      "role": "Media Team Co-Leader",
+      "img": "assets/team_hedaya.png"
+    }
+  }
+}

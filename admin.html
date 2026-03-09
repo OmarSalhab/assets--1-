@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TEDx Admin Dashboard</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#070707;
+      --red:#e62b1e;
+      --red2:#ff3b2f;
+      --text:#f5f5f5;
+      --muted:#b7b7b7;
+      --border:rgba(255,255,255,.10);
+    }
+.add-box{
+  padding:12px;
+  border-radius:16px;
+  background:rgba(0,0,0,.35);
+  border:1px solid var(--border);
+}
+.add-title{
+  font-weight:700;
+  margin-bottom:8px;
+}
+.add-box .form-control{
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.add-box .form-control::placeholder{
+  color:var(--muted);
+}
+
+    body{
+      background:
+        radial-gradient(1200px 600px at 20% 0%, rgba(230,43,30,.25), transparent 60%),
+        radial-gradient(900px 500px at 90% 20%, rgba(255,59,47,.18), transparent 55%),
+        var(--bg);
+      color:var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+    }
+
+    body::before{
+      content:"";
+      position: fixed;
+      inset:-10%;
+      background:url("assets/tedx_logo.png") center / min(210vw,2600px) no-repeat;
+      opacity:.22;
+      pointer-events:none;
+      z-index:0;
+    }
+
+    .wrap{ position:relative; z-index:1; padding:30px 0 80px; }
+
+    h1{
+      text-align:center;
+      color:var(--red);
+      font-weight:900;
+      margin-bottom:30px;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- TOP ACTIONS -->
+<div class="container mt-4">
+  <div class="d-flex gap-2 justify-content-center flex-wrap">
+    <button id="saveAllBtn" class="btn btn-danger px-4 rounded-pill">حفظ الكل</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="container mt-4">
+  <div class="d-flex gap-2 justify-content-center flex-wrap">
+    <button class="btn btn-danger px-4 rounded-pill" data-section="team">Team</button>
+    <button class="btn btn-outline-light px-4 rounded-pill" data-section="sponsors">Sponsors</button>
+    <button class="btn btn-outline-light px-4 rounded-pill" data-section="speakers">Speakers</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="container">
+    <h1>TEDx Admin Dashboard</h1>
+
+    <!-- ✅ TEAM -->
+    <section id="teamSection">
+      <!-- Add member + reorder -->
+      <div class="mb-4 p-3 rounded-4" style="background:rgba(0,0,0,.35);border:1px solid var(--border)">
+        <div class="d-flex flex-wrap gap-2 align-items-end justify-content-between">
+          <div class="flex-grow-1" style="min-width:240px">
+            <div class="fw-bold mb-2">إضافة عضو جديد</div>
+            <div class="row g-2">
+              <div class="col-12 col-md-4">
+                <input id="addName" class="form-control form-control-sm" placeholder="Name">
+              </div>
+              <div class="col-12 col-md-4">
+                <input id="addRole" class="form-control form-control-sm" placeholder="Role / Position">
+              </div>
+              <div class="col-12 col-md-2">
+                <input id="addPos" type="number" min="1" class="form-control form-control-sm" placeholder="# (اختياري)">
+              </div>
+              <div class="col-12 col-md-2">
+                <input id="addFile" type="file" class="form-control form-control-sm" accept="image/*">
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2">
+            <button id="addBtn" class="btn btn-outline-light btn-sm rounded-pill px-4">Add</button>
+            <button id="saveOrderBtn" class="btn btn-danger btn-sm rounded-pill px-4">حفظ الترتيب</button>
+          </div>
+        </div>
+        <div id="addMsg" class="small mt-2 text-secondary"></div>
+        <div class="small mt-1 text-secondary">💡 لتغيير المكان: غيّر رقم (Order #) في كل بطاقة ثم اضغط "حفظ الترتيب".</div>
+      </div>
+
+      <div id="teamGrid" class="row g-3"></div>
+    </section>
+
+  <section id="sponsorsSection" style="display:none">
+  <div class="text-center my-4">
+    <h2 class="fw-bold">Sponsors</h2>
+    <p class="text-secondary">تعديل السبونسر</p>
+  </div>
+
+  <!-- Add Sponsor -->
+  <div class="mb-4 p-3 rounded-4" style="background:rgba(0,0,0,.35);border:1px solid var(--border)">
+    <div class="fw-bold mb-2">إضافة سبونسر جديد</div>
+
+    <div class="row g-2 align-items-end">
+      <div class="col-12 col-md-3">
+        <input id="sAddName" class="form-control form-control-sm" placeholder="Name">
+      </div>
+      <div class="col-12 col-md-3">
+        <input id="sAddDesc" class="form-control form-control-sm" placeholder="Description">
+      </div>
+      <div class="col-12 col-md-2">
+        <select id="sAddTier" class="form-select form-select-sm">
+          <option value="platinum">Platinum</option>
+          <option value="gold">Gold</option>
+          <option value="silver">Silver</option>
+          <option value="bronze">Bronze</option>
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <input id="sAddPos" type="number" min="1" class="form-control form-control-sm" placeholder="# (1-5)">
+      </div>
+      <div class="col-12 col-md-2">
+        <input id="sAddFile" type="file" class="form-control form-control-sm" accept="image/*">
+      </div>
+    </div>
+
+    <div class="d-flex gap-2 mt-3">
+      <button id="sAddBtn" class="btn btn-outline-light btn-sm rounded-pill px-4">Add</button>
+      <button id="sSaveOrderBtn" class="btn btn-danger btn-sm rounded-pill px-4">حفظ الترتيب</button>
+    </div>
+
+    <div id="sAddMsg" class="small mt-2 text-secondary"></div>
+    <div class="small mt-1 text-secondary">💡 غيّر Order # في كل بطاقة داخل نوعها ثم اضغط "حفظ الترتيب".</div>
+  </div>
+
+  <!-- 3 Groups مثل الصفحة الرئيسية -->
+  <h3 class="fw-bold mt-4">Platinum Sponsor</h3>
+  <div id="sponsorPlatinumGrid" class="row g-3"></div>
+
+  <h3 class="fw-bold mt-5">Gold Sponsor</h3>
+  <div id="sponsorGoldGrid" class="row g-3"></div>
+
+  <h3 class="fw-bold mt-5">Silver Sponsor</h3>
+  <div id="sponsorSilverGrid" class="row g-3"></div>
+
+  <h3 class="fw-bold mt-5">Bronze Sponsor</h3>
+  <div id="sponsorBronzeGrid" class="row g-3"></div>
+</section>
+
+
+    <!-- ✅ SPEAKERS -->
+    <section id="speakersSection" style="display:none">
+      <div class="text-center my-4">
+        <h2 class="fw-bold">Speakers</h2>
+        <p class="text-secondary">تعديل السبيكرز</p>
+      </div>
+      <div class="add-box mb-4">
+  <div class="add-title">إضافة سبيكر جديد</div>
+  <div class="d-flex gap-2 flex-wrap">
+    <input id="spAddName" class="form-control" placeholder="Name">
+    <input id="spAddRole" class="form-control" placeholder="Role / Position">
+    <input id="spAddPos" class="form-control" placeholder="# (اختياري)" style="max-width:140px">
+    <input id="spAddFile" type="file" class="form-control" accept="image/*" style="max-width:260px">
+    <button id="spAddBtn" class="btn btn-light">Add</button>
+    <button id="spSaveOrderBtn" class="btn btn-danger">حفظ الترتيب</button>
+  </div>
+  <div id="spAddMsg" class="small mt-2 text-secondary"></div>
+</div>
+
+      <div id="speakerGrid" class="row g-3"></div>
+    </section>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

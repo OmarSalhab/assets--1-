@@ -1,0 +1,78 @@
+{
+  "order": [
+    "sponsor-mlrd43ay-0nr5z",
+    "sponsor-mlrd46cq-8zy5g",
+    "sponsor-mlrd49kf-v1rhn",
+    "sponsor-mlrd4dnp-vn2xm",
+    "sponsor-mlrd4h93-avk6f",
+    "sponsor-mlrd4n0g-obo4z",
+    "sponsor-mlrd4rfj-8l42t",
+    "sponsor-mlrd4ugn-9a4hy",
+    "sponsor-mlrd4wym-6tezz",
+    "sponsor-mls4phc4-k3age",
+    "sponsor-mls4pk7d-7dajt",
+    "sponsor-mls4plma-gonhr"
+  ],
+  "members": {
+    "sponsor-mlrd43ay-0nr5z": {
+      "name": ".",
+      "desc": "",
+      "tier": "gold"
+    },
+    "sponsor-mlrd46cq-8zy5g": {
+      "name": "..",
+      "desc": "",
+      "tier": "gold"
+    },
+    "sponsor-mlrd49kf-v1rhn": {
+      "name": "...",
+      "desc": "",
+      "tier": "gold"
+    },
+    "sponsor-mlrd4dnp-vn2xm": {
+      "name": ",",
+      "desc": "",
+      "tier": "silver"
+    },
+    "sponsor-mlrd4h93-avk6f": {
+      "name": ",,",
+      "desc": "",
+      "tier": "silver"
+    },
+    "sponsor-mlrd4n0g-obo4z": {
+      "name": ",,,",
+      "desc": "",
+      "tier": "silver"
+    },
+    "sponsor-mlrd4rfj-8l42t": {
+      "name": "3333333",
+      "desc": "",
+      "tier": "bronze"
+    },
+    "sponsor-mlrd4ugn-9a4hy": {
+      "name": "غغغغغغغغغ",
+      "desc": "",
+      "tier": "bronze"
+    },
+    "sponsor-mlrd4wym-6tezz": {
+      "name": "ممممممم",
+      "desc": "",
+      "tier": "bronze"
+    },
+    "sponsor-mls4phc4-k3age": {
+      "name": "/",
+      "desc": "",
+      "tier": "platinum"
+    },
+    "sponsor-mls4pk7d-7dajt": {
+      "name": "//",
+      "desc": "",
+      "tier": "platinum"
+    },
+    "sponsor-mls4plma-gonhr": {
+      "name": "///",
+      "desc": "",
+      "tier": "platinum"
+    }
+  }
+}
