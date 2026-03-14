@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 node_modules
 .npm
 data/*.db
 data/*.sqlite
 data/*.sqlite-wal
 data/*.sqlite-shm
+=======
+node_modules/
+npm-debug.log
+.DS_Store
+>>>>>>> 3df38d62de67dc51957020aab9e0a2409cfef7b7
