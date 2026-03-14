@@ -7,6 +7,16 @@ app = 'tedxcountdown'
 primary_region = 'iad'
 
 [build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "3000"
+  DB_DIR = "/data"
+  ASSETS_DIR = "/data/assets"
+
+[mounts]
+  source = "event_data"
+  destination = "/data"
 
 [http_service]
   internal_port = 3000

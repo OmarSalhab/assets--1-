@@ -6,16 +6,19 @@ const Database = require("better-sqlite3");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';
 
-const ASSETS_DIR = path.join(__dirname, "assets");
-const DATA_DIR = path.join(__dirname, "data");
+// Using environment variables for Fly.io Volume support
+const ASSETS_DIR = process.env.ASSETS_DIR || path.join(__dirname, "assets");
+const DB_DIR = process.env.DB_DIR || path.join(__dirname, "data");
+const INIT_DATA_DIR = path.join(__dirname, "data"); // the local folder containing JSONs
 
 // Ensure folders exist
-if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR);
-if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
+if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR, { recursive: true });
+if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });
 
 // Initialize SQLite DB
-const db = new Database(path.join(DATA_DIR, "database.sqlite"));
+const db = new Database(path.join(DB_DIR, "database.sqlite"));
 db.pragma('journal_mode = WAL');
 db.exec(`
   CREATE TABLE IF NOT EXISTS entities (
@@ -29,7 +32,7 @@ function initEntity(key) {
   if (!row) {
     let initialData = {};
     try {
-      const jsonPath = path.join(DATA_DIR, `${key}.json`);
+      const jsonPath = path.join(INIT_DATA_DIR, `${key}.json`);
       if (fs.existsSync(jsonPath)) {
         const raw = fs.readFileSync(jsonPath, "utf-8");
         if (raw) initialData = JSON.parse(raw);
@@ -59,7 +62,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve static
+// Serve static files
+app.use('/assets', express.static(ASSETS_DIR)); 
 app.use(express.static(__dirname));
 
 // ---------- Helpers ----------
@@ -268,6 +272,6 @@ const key = String(req.body?.key || req.query?.key || "").trim();
   res.json({ ok: true, path: relPath });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`Server running on http://${HOST}:${PORT}`);
 });
