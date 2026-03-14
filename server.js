@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const Database = require("better-sqlite3");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,13 +10,40 @@ const PORT = process.env.PORT || 3000;
 const ASSETS_DIR = path.join(__dirname, "assets");
 const DATA_DIR = path.join(__dirname, "data");
 
-const TEAM_JSON = path.join(DATA_DIR, "team.json");
-const SPONSORS_JSON = path.join(DATA_DIR, "sponsors.json");
-const SPEAKERS_JSON = path.join(DATA_DIR, "speakers.json");
-
 // Ensure folders exist
 if (!fs.existsSync(ASSETS_DIR)) fs.mkdirSync(ASSETS_DIR);
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
+
+// Initialize SQLite DB
+const db = new Database(path.join(DATA_DIR, "database.sqlite"));
+db.pragma('journal_mode = WAL');
+db.exec(`
+  CREATE TABLE IF NOT EXISTS entities (
+    entity_key TEXT PRIMARY KEY,
+    data TEXT
+  )
+`);
+
+function initEntity(key) {
+  const row = db.prepare('SELECT data FROM entities WHERE entity_key = ?').get(key);
+  if (!row) {
+    let initialData = {};
+    try {
+      const jsonPath = path.join(DATA_DIR, `${key}.json`);
+      if (fs.existsSync(jsonPath)) {
+        const raw = fs.readFileSync(jsonPath, "utf-8");
+        if (raw) initialData = JSON.parse(raw);
+      }
+    } catch (e) {
+      console.error(`Error migrating ${key}.json:`, e);
+    }
+    db.prepare('INSERT INTO entities (entity_key, data) VALUES (?, ?)').run(key, JSON.stringify(initialData));
+  }
+}
+
+initEntity('team');
+initEntity('sponsors');
+initEntity('speakers');
 
 app.use(express.json({ limit: "2mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -35,23 +63,18 @@ app.use((req, res, next) => {
 app.use(express.static(__dirname));
 
 // ---------- Helpers ----------
-function readJson(filePath) {
+function readEntityRaw(entityKey) {
   try {
-    if (!fs.existsSync(filePath)) return {};
-    const raw = fs.readFileSync(filePath, "utf-8");
-    return raw ? JSON.parse(raw) : {};
+    const row = db.prepare('SELECT data FROM entities WHERE entity_key = ?').get(entityKey);
+    return row && row.data ? JSON.parse(row.data) : {};
   } catch {
     return {};
   }
 }
-function writeJson(filePath, obj) {
-  fs.writeFileSync(filePath, JSON.stringify(obj, null, 2), "utf-8");
-}
 
-// init missing
-if (!fs.existsSync(TEAM_JSON)) writeJson(TEAM_JSON, {});
-if (!fs.existsSync(SPONSORS_JSON)) writeJson(SPONSORS_JSON, {});
-if (!fs.existsSync(SPEAKERS_JSON)) writeJson(SPEAKERS_JSON, {});
+function writeEntityRaw(entityKey, obj) {
+  db.prepare('UPDATE entities SET data = ? WHERE entity_key = ?').run(JSON.stringify(obj), entityKey);
+}
 
 // ---------- Generic normalize {order,members} ----------
 function normalizeOrderedShape(raw) {
@@ -74,8 +97,8 @@ function normalizeOrderedShape(raw) {
   return { order, members };
 }
 
-function readEntity(filePath) {
-  const raw = readJson(filePath);
+function readEntity(entityKey) {
+  const raw = readEntityRaw(entityKey);
   const ent = normalizeOrderedShape(raw);
 
   const keys = new Set(Object.keys(ent.members));
@@ -86,8 +109,8 @@ function readEntity(filePath) {
   return ent;
 }
 
-function writeEntity(filePath, ent) {
-  writeJson(filePath, {
+function writeEntity(entityKey, ent) {
+  writeEntityRaw(entityKey, {
     order: Array.isArray(ent.order) ? ent.order : [],
     members: ent.members || {},
   });
@@ -98,18 +121,18 @@ function makeKey(prefix) {
 }
 
 // ---------- Build ordered routes (team/sponsors/speakers) ----------
-function bindOrderedRoutes(basePath, filePath, prefix) {
+function bindOrderedRoutes(basePath, entityKey, prefix) {
   const requireRole = prefix !== "sponsor"; // sponsors don't require "role"
 
   app.get(basePath, (req, res) => {
-    res.json(readEntity(filePath));
+    res.json(readEntity(entityKey));
   });
 
   app.post(basePath, (req, res) => {
     const body = req.body || {};
     const action = String(body.action || "update").toLowerCase();
 
-    const ent = readEntity(filePath);
+    const ent = readEntity(entityKey);
 
     if (action === "reorder") {
       if (!Array.isArray(body.order)) return res.status(400).json({ error: "Missing order" });
@@ -117,7 +140,7 @@ function bindOrderedRoutes(basePath, filePath, prefix) {
       const keys = new Set(Object.keys(ent.members));
       ent.order = incoming.filter(k => keys.has(k));
       for (const k of Object.keys(ent.members)) if (!ent.order.includes(k)) ent.order.push(k);
-      writeEntity(filePath, ent);
+      writeEntity(entityKey, ent);
       return res.json({ ok: true });
     }
 
@@ -127,7 +150,7 @@ function bindOrderedRoutes(basePath, filePath, prefix) {
 
       delete ent.members[key];
       ent.order = ent.order.filter(k => k !== key);
-      writeEntity(filePath, ent);
+      writeEntity(entityKey, ent);
       return res.json({ ok: true });
     }
 
@@ -163,7 +186,7 @@ function bindOrderedRoutes(basePath, filePath, prefix) {
         ent.order.push(key);
       }
 
-      writeEntity(filePath, ent);
+      writeEntity(entityKey, ent);
       return res.json({ ok: true, key });
     }
 
@@ -179,15 +202,15 @@ function bindOrderedRoutes(basePath, filePath, prefix) {
     ent.members[key] = { ...cur, ...payload };
     if (!ent.order.includes(key)) ent.order.push(key);
 
-    writeEntity(filePath, ent);
+    writeEntity(entityKey, ent);
     return res.json({ ok: true });
   });
 }
 
 // TEAM / SPONSORS / SPEAKERS
-bindOrderedRoutes("/api/team", TEAM_JSON, "member");
-bindOrderedRoutes("/api/sponsors", SPONSORS_JSON, "sponsor");
-bindOrderedRoutes("/api/speakers", SPEAKERS_JSON, "speaker");
+bindOrderedRoutes("/api/team", "team", "member");
+bindOrderedRoutes("/api/sponsors", "sponsors", "sponsor");
+bindOrderedRoutes("/api/speakers", "speakers", "speaker");
 
 // ---- Upload handler (team/sponsor/speaker) ----
 // ✅ FIX: make filename unique per "key" so changing one person doesn't affect others
@@ -232,15 +255,15 @@ const key = String(req.body?.key || req.query?.key || "").trim();
 
   const relPath = "assets/" + req.file.filename;
 
-  let filePath = TEAM_JSON;
-  if (type === "sponsor" || type === "sponsors") filePath = SPONSORS_JSON;
-  if (type === "speaker" || type === "speakers") filePath = SPEAKERS_JSON;
+  let entityKey = "team";
+  if (type === "sponsor" || type === "sponsors") entityKey = "sponsors";
+  if (type === "speaker" || type === "speakers") entityKey = "speakers";
 
-  const ent = readEntity(filePath);
+  const ent = readEntity(entityKey);
   const cur = ent.members[key] || {};
   ent.members[key] = { ...cur, img: relPath };
   if (!ent.order.includes(key)) ent.order.push(key);
-  writeEntity(filePath, ent);
+  writeEntity(entityKey, ent);
 
   res.json({ ok: true, path: relPath });
 });
