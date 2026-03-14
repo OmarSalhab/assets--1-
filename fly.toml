@@ -1,25 +1,15 @@
-# fly.toml app configuration file generated for tedxcountdown on 2026-03-13T15:09:38Z
+# fly.toml app configuration file generated for assetssss on 2026-03-14T14:39:38Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'tedxcountdown'
-primary_region = 'iad'
+app = 'assetssss'
+primary_region = 'cdg'
 
 [build]
-  dockerfile = "Dockerfile"
-
-[env]
-  PORT = "3000"
-  DB_DIR = "/data"
-  ASSETS_DIR = "/data/assets"
-
-[mounts]
-  source = "event_data"
-  destination = "/data"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 8080
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true
